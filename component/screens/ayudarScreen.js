@@ -1,10 +1,7 @@
 import * as React from 'react';
-import { Alert, Modal, TouchableHighlight, View, Text, TouchableOpacity, StyleSheet, TextInput,FlatList } from 'react-native';
-
+import { Alert, Modal, TouchableHighlight, View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList } from 'react-native';
 import realm from '../../src/REALMDB';
-
-import Menu, { MenuItem } from 'react-native-material-menu';
-
+import { FloatingTitleTextInputField } from '../../src/floating_title_text_input_field';
 
 class ayudarScreen extends React.Component {
 
@@ -17,11 +14,20 @@ class ayudarScreen extends React.Component {
             inputApellido: '',
             inputDireccion: '',
             inputTipo: '',
+            inputTipoMetodo: '',
             inputEmail: '',
             inputTelefono: 'int',
             modalVisible: false,
-            nameMenu: 'seleccionar',
-            shouldShow:false,
+            shouldShow: false,
+            shouldShowMetodo: false,
+            inputMonto: 'int',
+            inputTarjeta: '',
+            inputNroTarjeta: '',
+            inputCodigoTarjeta: '',
+            inputCuentaCorriente: 'int',
+            inputCBU: 'int',
+            inputCUIT: 'int',
+            inputOtros: '',
         }
         //this.persona=realm.objects('Person').sorted('id');
         //this.personList= realm.objects('Person').sorted('');
@@ -31,26 +37,14 @@ class ayudarScreen extends React.Component {
             this.setState({ realm });
         })
     }
-    _menu = null;
-
     _updateMasterStateName = (attrName, value) => {
         this.setState({ inputName: value });
         this.setState({ [attrName]: value })
     }
-    onPressButtonMenu(menu) {
-        console.log(menu.text);
+    _updateMasterStateOtros = (attrName, value) => {
+        this.setState({ inputOtros: value });
+        this.setState({ [attrName]: value });
     }
-    setMenuRef = ref => {
-        this._menu = ref
-    };
-
-    hideMenu = () => {
-        this._menu.hide();
-    };
-
-    showMenu = () => {
-        this._menu.show();
-    };
     setModalVisible = (visible) => {
         this.setState({ modalVisible: visible });
     }
@@ -64,42 +58,23 @@ class ayudarScreen extends React.Component {
                 name: this.state.inputName,
                 apellido: this.state.inputApellido,
                 direccion: this.state.inputDireccion,
-                tipo: this.state.nameMenu,
+                tipo: this.state.inputTipo,
                 email: this.state.inputEmail,
                 telefono: this.state.inputTelefono,
             });
         });
         this.setState({ realm });
-        this.setState({ nameMenu: 'selecccionar' });
-        this.refs['textInput1'].setNativeProps({ text: '' });
-        this.refs['textInput2'].setNativeProps({ text: '' });
-        this.refs['textInput3'].setNativeProps({ text: '' });
-        this.refs['textInput5'].setNativeProps({ text: '' });
-        this.refs['textInput6'].setNativeProps({ text: '' });
         console.log(realm.objects('Donacion'));
         //alert('donacion/ayuda en proceso nos contactaremos con usted...');
         this.setModalVisible(true);
     }
     render() {
         const { modalVisible } = this.state;
-        const {shouldShow}=this.state;
+        const { shouldShow } = this.state;
+        const { shouldShowMetodo } = this.state;
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', fontFamily: 'Serif', backgroundColor: '#DC7633' }}>
                 <Text style={{ fontFamily: 'Serif', fontSize: 30, top: -30 }}>Ayudar</Text>
-
-                <View style={styles.dogBox}>
-                    {/* <Menu
-                                    ref={this.setMenuRef} 
-                                    style={{width:300}}
-                                    button={<Text style={styles.nameMenu } onPress={this.showMenu}>{this.state.nameMenu}</Text>}
-                                >
-                                    <MenuItem onPress={()=>{this.hideMenu();this.setState({nameMenu:'dinero'})}} >dinero</MenuItem>
-                                    <MenuItem onPress={()=>{this.hideMenu();this.setState({nameMenu:'comida'})}}>comida</MenuItem>
-                                    <MenuItem onPress={()=>{this.hideMenu();this.setState({nameMenu:'participacion'})}}>participacion</MenuItem>
-                                    <MenuItem onPress={()=>{this.hideMenu();this.setState({nameMenu:'otros'})}}>otros</MenuItem>
-                                </Menu> */}
-                </View>
-
                 <Text></Text>
                 <View>
                     <Text></Text>
@@ -108,13 +83,10 @@ class ayudarScreen extends React.Component {
                     <Text></Text>
                     <View style={{ borderBottomColor: 'white', borderBottomWidth: 1, }} />
                 </View>
-                    <View>
+                <View>
 
-                        <View style={{ borderBottomColor: 'white', borderBottomWidth: 1, }} />
-                    </View>
-
-                
-
+                    <View style={{ borderBottomColor: 'white', borderBottomWidth: 1, }} />
+                </View>
                 <TouchableOpacity
                     style={{}}
                     onPress={() => this.setState({ shouldShow: !shouldShow })}
@@ -123,18 +95,11 @@ class ayudarScreen extends React.Component {
                 </TouchableOpacity>
                 {shouldShow ? (
                     <View>
-                        {/* <Image
-              source={{
-                uri:
-                  'https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png',
-              }}
-              style={{width: 250, height: 250}}
-            /> */}
                         <FlatList
-                            data={['dinero', 'comida', 'participacion', 'otros']}
+                            data={['dinero', 'comida', 'voluntario', 'otros']}
                             style={{ zIndex: 1, height: 60, backgroundColor: '#DC7633', width: 300, flexGrow: 0, position: 'absolute', left: -150 }}
                             renderItem={({ item }) => (
-                                <TouchableOpacity onPress={() => { this.setState({ inputTipo: item });}}>
+                                <TouchableOpacity onPress={() => { this.setState({ inputTipo: item }); this.setState({ shouldShow: !shouldShow }) }}>
                                     <View>
                                         <Text>{item}</Text>
                                     </View>
@@ -144,7 +109,66 @@ class ayudarScreen extends React.Component {
                         />
                     </View>
                 ) : null}
-                {this.state.inputTipo=='dinero'?<View><Text>dineroooooo</Text></View>:null}
+                {this.state.inputTipo == 'dinero' ? (
+                    <View>
+                        <View>
+                            <Text></Text>
+                            <Text style={{ color: 'white', width: 300 }}>Tipo de Metodo</Text>
+                            <Text style={{ fontSize: 20, color: 'white' }}>{this.state.inputTipoMetodo}</Text>
+                            <Text></Text>
+                            <View style={{ borderBottomColor: 'white', borderBottomWidth: 1, }} />
+                        </View>
+                        <View>
+
+                            <View style={{ borderBottomColor: 'white', borderBottomWidth: 1, }} />
+                        </View>
+                        <TouchableOpacity
+                            style={{left:100}}
+                            onPress={() => this.setState({ shouldShowMetodo: !shouldShowMetodo })}
+                        >
+                            <Text>opciones Metodo</Text>
+                        </TouchableOpacity>
+                        {shouldShowMetodo ? (
+                            <View>
+                                <FlatList
+                                    data={['efectivo', 'tarjeta', 'deposito']}
+                                    style={{ zIndex: 2, height: 60, backgroundColor: '#DC7633', width: 300, flexGrow: 0, position: 'relative', left: 0 }}
+                                    renderItem={({ item }) => (
+                                        <TouchableOpacity onPress={() => { this.setState({ inputTipoMetodo: item });this.setState({ shouldShowMetodo: !shouldShowMetodo }) }}>
+                                            <View>
+                                                <Text>{item}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )}
+                                    keyExtractor={(item) => item.toString()}
+                                />
+                            </View>)
+                            : null}
+                    </View>)
+                    : null}
+                {this.state.inputTipo == 'comida' ?
+                    <View><Text>comidaaaaaa</Text></View>
+                    : null}
+                {this.state.inputTipo == 'voluntario' ?
+                    <View><Text>voluntario</Text></View>
+                    : null}
+                {this.state.inputTipo == 'otros' ?
+                    <View>
+
+                        <View>
+                            <FloatingTitleTextInputField attrName='Ingrese objeto'
+                                title='Ingrese objeto'
+                                value={this.state.inputOtros}
+                                updateMasterState={this._updateMasterStateOtros}
+                                textInputStyles={{ // here you can add additional TextInput styles
+                                    color: 'white',
+                                }}
+                            />
+                            <View style={{ borderBottomColor: 'white', borderBottomWidth: 1, }} />
+                        </View>
+                    </View>
+                    : null}
+
                 <View>
                     <Text></Text>
                     <TouchableOpacity onPress={() => this.agregarDonacion()}>
