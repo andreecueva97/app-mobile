@@ -144,6 +144,7 @@ class ayudarScreen extends React.Component {
                         />
                     </View>
                 ) : null}
+                {this.state.inputTipo=='dinero'?<View><Text>dineroooooo</Text></View>:null}
                 <View>
                     <Text></Text>
                     <TouchableOpacity onPress={() => this.agregarDonacion()}>
